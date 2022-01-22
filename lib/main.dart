@@ -21,15 +21,36 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  __MyHomePageState createState() => __MyHomePageState();
+}
+
+class __MyHomePageState extends State<MyHomePage> {
+  String text = "";
+
+  void changeText(String text) {
+    this.setState(() {
+      this.text = text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Chat Lobby App")), body: TextInputWidget());
+        appBar: AppBar(title: Text("Chat Lobby App")),
+        body: Column(children: <Widget>[
+          TextInputWidget(this.changeText),
+          Text(this.text)
+        ]));
   }
 }
 
 class TextInputWidget extends StatefulWidget {
+  final Function(String) callback;
+
+  TextInputWidget(this.callback);
+
   @override
   _TextInputWidgetState createState() => _TextInputWidgetState();
 }
@@ -43,6 +64,11 @@ class _TextInputWidgetState extends State<TextInputWidget> {
     controller.dispose();
   }
 
+  void click() {
+    widget.callback(controller.text);
+    controller.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
@@ -53,8 +79,8 @@ class _TextInputWidgetState extends State<TextInputWidget> {
               labelText: "Type a message:",
               suffixIcon: IconButton(
                 icon: Icon(Icons.send),
-                onPressed: () => {},
-                splashColor: Colors.yellow,
+                onPressed: this.click,
+                splashColor: Colors.blue,
                 tooltip: "sends a message to chatbox",
               )))
     ]);
