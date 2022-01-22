@@ -58,8 +58,8 @@ class __MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(title: Text("Chat Lobby App")),
         body: Column(children: <Widget>[
-          Expanded(child: PostList(this.posts)),
-          Expanded(child: Expanded(child: TextInputWidget(this.newPosts)))
+          Expanded(child: PostList(posts)),
+          Expanded(child: TextInputWidget(newPosts))
         ]));
   }
 }
@@ -67,7 +67,7 @@ class __MyHomePageState extends State<MyHomePage> {
 class TextInputWidget extends StatefulWidget {
   final Function(String) callback;
 
-  TextInputWidget(this.callback);
+  const TextInputWidget(this.callback, {Key? key}) : super(key: key);
 
   @override
   _TextInputWidgetState createState() => _TextInputWidgetState();
@@ -91,13 +91,13 @@ class _TextInputWidgetState extends State<TextInputWidget> {
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       TextField(
-          controller: this.controller,
+          controller: controller,
           decoration: InputDecoration(
               prefixIcon: Icon(Icons.message),
               labelText: "Type a message:",
               suffixIcon: IconButton(
                 icon: Icon(Icons.send),
-                onPressed: this.click,
+                onPressed: click,
                 splashColor: Colors.blue,
                 tooltip: "sends a message to chatbox",
               )))
@@ -106,7 +106,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
 }
 
 class PostList extends StatefulWidget {
-  final List<Post> list_items;
+  List<Post> list_items;
 
   PostList(this.list_items);
 
@@ -121,20 +121,19 @@ class _PostListState extends State<PostList> {
       itemCount: this.widget.list_items.length,
       itemBuilder: (context, index) {
         var post = this.widget.list_items[index];
-        return Card(
-            child: Row(children: <Widget>[
-          Expanded(
-              child: ListTile(
-            title: Text(post.body),
-            subtitle: Text(post.author),
-          )),
-          Row(children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.thumb_up),
-              onPressed: post.likedPost,
-            )
-          ])
-        ]));
+        return Container(
+          child: Row(children: <Widget>[
+            Expanded(
+                child: ListTile(
+                    title: Text(post.body), subtitle: Text(post.author))),
+            Row(children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.thumb_up),
+                onPressed: post.likedPost,
+              )
+            ])
+          ]),
+        );
       },
     );
   }
