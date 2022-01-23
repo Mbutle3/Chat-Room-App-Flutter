@@ -59,7 +59,7 @@ class __MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(title: Text("Chat Lobby App")),
         body: Column(children: <Widget>[
           Expanded(child: PostList(posts)),
-          Expanded(child: TextInputWidget(newPosts))
+          TextInputWidget(newPosts)
         ]));
   }
 }
@@ -84,6 +84,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
 
   void click() {
     widget.callback(controller.text);
+    FocusScope.of(context).unfocus();
     controller.clear();
   }
 
@@ -115,6 +116,12 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
+  void like(Function callback) {
+    this.setState(() {
+      callback();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -127,10 +134,15 @@ class _PostListState extends State<PostList> {
                 child: ListTile(
                     title: Text(post.body), subtitle: Text(post.author))),
             Row(children: <Widget>[
+              Container(
+                child: Text(post.like_count.toString(),
+                    style: const TextStyle(fontSize: 20)),
+                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              ),
               IconButton(
-                icon: Icon(Icons.thumb_up),
-                onPressed: post.likedPost,
-              )
+                  icon: const Icon(Icons.thumb_up),
+                  onPressed: () => like(post.likedPost),
+                  color: post.userLiked ? Colors.blue : Colors.black)
             ])
           ]),
         );
